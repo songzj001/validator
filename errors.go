@@ -72,8 +72,7 @@ func (ve ValidationErrors) Translate(ut ut.Translator) ValidationErrorsTranslati
 		// 	trans[fe.ns[1:]] = fe.Translate(ut)
 		// 	continue
 		// }
-
-		trans[fe.ns] = fe.Translate(ut)
+		trans[fe.jsonTag] = fe.Translate(ut)
 	}
 
 	return trans
@@ -82,6 +81,8 @@ func (ve ValidationErrors) Translate(ut ut.Translator) ValidationErrorsTranslati
 // FieldError contains all functions to get error details
 type FieldError interface {
 
+	// returns the json tag if exists. if null will Return FieldName.
+	JsonTag() string
 	// returns the validation tag that failed. if the
 	// validation was an alias, this will return the
 	// alias name and not the underlying tag that failed.
@@ -166,6 +167,7 @@ var _ error = new(fieldError)
 // it complies with the FieldError interface
 type fieldError struct {
 	v              *Validate
+	jsonTag		   string
 	tag            string
 	actualTag      string
 	ns             string
@@ -176,6 +178,10 @@ type fieldError struct {
 	param          string
 	kind           reflect.Kind
 	typ            reflect.Type
+}
+
+func (fe *fieldError) JsonTag() string  {
+	return fe.jsonTag
 }
 
 // Tag returns the validation tag that failed.

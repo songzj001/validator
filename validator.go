@@ -51,6 +51,7 @@ func (v *validate) validateStruct(ctx context.Context, parent reflect.Value, cur
 		structNs = append(structNs, '.')
 	}
 
+
 	// ct is nil on top level struct, and structs as fields that have no tag info
 	// so if nil or if not nil and the structonly tag isn't present
 	if ct == nil || ct.typeof != typeStructOnly {
@@ -93,6 +94,7 @@ func (v *validate) validateStruct(ctx context.Context, parent reflect.Value, cur
 		v.ns = ns
 		v.actualNs = structNs
 
+
 		cs.fn(ctx, v)
 	}
 }
@@ -103,8 +105,8 @@ func (v *validate) traverseField(ctx context.Context, parent reflect.Value, curr
 	var typ reflect.Type
 	var kind reflect.Kind
 
-	current, kind, v.fldIsPointer = v.extractTypeInternal(current, false)
 
+	current, kind, v.fldIsPointer = v.extractTypeInternal(current, false)
 	switch kind {
 	case reflect.Ptr, reflect.Interface, reflect.Invalid:
 
@@ -131,6 +133,7 @@ func (v *validate) traverseField(ctx context.Context, parent reflect.Value, curr
 				v.errs = append(v.errs,
 					&fieldError{
 						v:              v.v,
+						jsonTag:        cf.jsonTag,
 						tag:            ct.aliasTag,
 						actualTag:      ct.tag,
 						ns:             v.str1,
@@ -148,6 +151,7 @@ func (v *validate) traverseField(ctx context.Context, parent reflect.Value, curr
 			v.errs = append(v.errs,
 				&fieldError{
 					v:              v.v,
+					jsonTag:        cf.jsonTag,
 					tag:            ct.aliasTag,
 					actualTag:      ct.tag,
 					ns:             v.str1,
@@ -193,6 +197,7 @@ func (v *validate) traverseField(ctx context.Context, parent reflect.Value, curr
 						v.errs = append(v.errs,
 							&fieldError{
 								v:              v.v,
+								jsonTag:		cf.jsonTag,
 								tag:            ct.aliasTag,
 								actualTag:      ct.tag,
 								ns:             v.str1,
@@ -208,7 +213,6 @@ func (v *validate) traverseField(ctx context.Context, parent reflect.Value, curr
 						return
 					}
 				}
-
 				ct = ct.next
 			}
 
@@ -399,6 +403,7 @@ OUTER:
 						v.errs = append(v.errs,
 							&fieldError{
 								v:              v.v,
+								jsonTag:        cf.jsonTag,
 								tag:            ct.aliasTag,
 								actualTag:      ct.actualAliasTag,
 								ns:             v.str1,
@@ -419,6 +424,7 @@ OUTER:
 						v.errs = append(v.errs,
 							&fieldError{
 								v:              v.v,
+								jsonTag:        cf.jsonTag,
 								tag:            tVal,
 								actualTag:      tVal,
 								ns:             v.str1,
@@ -460,6 +466,7 @@ OUTER:
 				v.errs = append(v.errs,
 					&fieldError{
 						v:              v.v,
+						jsonTag: 		cf.jsonTag,
 						tag:            ct.aliasTag,
 						actualTag:      ct.tag,
 						ns:             v.str1,
@@ -476,7 +483,6 @@ OUTER:
 				return
 
 			}
-
 			ct = ct.next
 		}
 	}

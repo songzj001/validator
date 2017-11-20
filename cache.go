@@ -82,6 +82,7 @@ type cField struct {
 	idx        int
 	name       string
 	altName    string
+	jsonTag   string
 	namesEqual bool
 	cTags      *cTag
 }
@@ -162,6 +163,7 @@ func (v *Validate) extractStructCache(current reflect.Value, sName string) *cStr
 			idx:        i,
 			name:       fld.Name,
 			altName:    customName,
+			jsonTag:	fld.Tag.Get("json"),
 			cTags:      ctag,
 			namesEqual: fld.Name == customName,
 		})
